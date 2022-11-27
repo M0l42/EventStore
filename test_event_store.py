@@ -60,6 +60,24 @@ class TestDatetimeEventStore:
         res = self.event_store.get_events(start=datetime(2019, 8, 17), end=datetime(2019, 8, 21))
         assert res == []
 
+    def test_delete_event_success(self):
+        self.initialize()
+        self.event_store.delete_event([{"date": datetime(2018, 8, 19), "event": "Processing 1"},
+                                       {"date": datetime(2018, 8, 20), "event": "Processing 2"}])
+        assert self.event_store.events == [{"date": datetime(2018, 8, 18), "event": "Start process"},
+                                           {"date": datetime(2018, 8, 21), "event": "Processing 3"},
+                                           {"date": datetime(2018, 8, 22), "event": "End process"}]
+
+    def test_delete_event_wrong_entry(self):
+        self.initialize()
+        self.event_store.delete_event([{"date": datetime(2018, 8, 19), "event": "Processing 2"}])
+        assert self.event_store.events == data_test
+        self.event_store.delete_event([])
+        assert self.event_store.events == data_test
+        with pytest.raises(TypeError):
+            self.event_store.delete_event(15)
+            assert self.event_store.events == data_test
+
     def test_validate_success(self):
         self.initialize()
         assert self.event_store.validate("2018-08-18") == datetime(2018, 8, 18)
