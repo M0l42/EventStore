@@ -2,7 +2,7 @@ from datetime import datetime, date
 
 
 class DatetimeEventStore:
-    def __init__(self, events=None):
+    def __init__(self, events=[]):
         self.events = events
 
     def store_event(self, at, event):
@@ -12,7 +12,7 @@ class DatetimeEventStore:
     def get_events(self, start, end):
         events_to_get = []
         for event in self.events:
-            if start <= event["date"] <= end:
+            if self.validate(start) <= event["date"] <= self.validate(end):
                 events_to_get.append(event)
         return events_to_get
 
