@@ -21,9 +21,10 @@ class DatetimeEventStore:
 
     def delete_event(self, events_to_remove):
         for event in events_to_remove:
-            for i in range(len(self.events)):
-                if self.events[i] == event:
-                    self.events.pop(i)
+            try:
+                self.events.remove(event)
+            except ValueError:
+                pass
 
     @staticmethod
     def validate(date_to_validate):

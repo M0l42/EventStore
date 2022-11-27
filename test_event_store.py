@@ -67,6 +67,8 @@ class TestDatetimeEventStore:
         assert self.event_store.events == [{"date": datetime(2018, 8, 18), "event": "Start process"},
                                            {"date": datetime(2018, 8, 21), "event": "Processing 3"},
                                            {"date": datetime(2018, 8, 22), "event": "End process"}]
+        self.event_store.delete_event(self.event_store.get_events("2018-01-01", "2018-12-31"))
+        assert self.event_store.events == []
 
     def test_delete_event_wrong_entry(self):
         self.initialize()
