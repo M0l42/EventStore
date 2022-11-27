@@ -59,3 +59,14 @@ class TestDatetimeEventStore:
     def test_get_no_event(self):
         res = self.event_store.get_events(start=datetime(2019, 8, 17), end=datetime(2019, 8, 21))
         assert res == []
+
+    def test_validate_success(self):
+        self.initialize()
+        assert self.event_store.validate("2018-08-18") == datetime(2018, 8, 18)
+        assert self.event_store.validate("2018-08-18 00:00:00") == datetime(2018, 8, 18)
+
+    def test_validate_error(self):
+        self.initialize()
+        with pytest.raises(ValueError):
+            self.event_store.validate("2018/08/10")
+
