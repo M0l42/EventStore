@@ -4,22 +4,27 @@ from event_store import DatetimeEventStore
 
 data_test = [
     {
+        "id": 0,
         "date": datetime(2018, 8, 18),
         "event": "Start process"
     },
     {
+        "id": 1,
         "date": datetime(2018, 8, 19),
         "event": "Processing 1"
     },
     {
+        "id": 2,
         "date": datetime(2018, 8, 20),
         "event": "Processing 2"
     },
     {
+        "id": 3,
         "date": datetime(2018, 8, 21),
         "event": "Processing 3"
     },
     {
+        "id": 4,
         "date": datetime(2018, 8, 22),
         "event": "End process"
     },
@@ -36,9 +41,10 @@ class TestDatetimeEventStore:
     def test_store_event_success(self):
         self.initialize()
         assert self.event_store.store_event(datetime(2018, 8, 23), "test event") == \
-               {"date": datetime(2018, 8, 23), "event": "test event"}
+               {"id": 5, "date": datetime(2018, 8, 23), "event": "test event"}
         assert self.event_store.events[-1]['date'] == datetime(2018, 8, 23)
         assert self.event_store.events[-1]['event'] == "test event"
+        assert self.event_store.events[-2]['id'] + 1 == self.event_store.events[-1]['id']
 
     def test_store_event_error(self):
         self.initialize()
@@ -52,13 +58,26 @@ class TestDatetimeEventStore:
         print(data_test)
         assert res == data_test
         res = self.event_store.get_events(start=datetime(2018, 8, 19), end=datetime(2018, 8, 21))
-        assert res == [{"date": datetime(2018, 8, 19), "event": "Processing 1"},
-                       {"date": datetime(2018, 8, 20), "event": "Processing 2"},
-                       {"date": datetime(2018, 8, 21), "event": "Processing 3"},]
+        assert res == [{"id": 1, "date": datetime(2018, 8, 19), "event": "Processing 1"},
+                       {"id": 2, "date": datetime(2018, 8, 20), "event": "Processing 2"},
+                       {"id": 3, "date": datetime(2018, 8, 21), "event": "Processing 3"},]
 
     def test_get_no_event(self):
         res = self.event_store.get_events(start=datetime(2019, 8, 17), end=datetime(2019, 8, 21))
         assert res == []
+
+    def test_update_event(self):
+        self.initialize()
+        self.event_store.update_event(1, {"date": datetime(2022, 10, 15), "event": "Updating"})
+        assert self.event_store.events[1] == {"id": 1, "date": datetime(2022, 10, 15), "event": "Updating"}
+
+    def test_delete_by_id_success(self):
+        self.initialize()
+        self.event_store.delete_event_by_id(2)
+        assert self.event_store.events == [{"date": datetime(2018, 8, 18), "event": "Start process"},
+                                           {"date": datetime(2018, 8, 19), "event": "Processing 1"},
+                                           {"date": datetime(2018, 8, 21), "event": "Processing 3"},
+                                           {"date": datetime(2018, 8, 22), "event": "End process"}]
 
     def test_delete_event_success(self):
         self.initialize()
