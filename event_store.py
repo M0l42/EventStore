@@ -4,6 +4,11 @@ from datetime import datetime, date
 class DatetimeEventStore:
     def __init__(self, events=[]):
         self.events = events
+        self.format_data()
+
+    def format_data(self):
+        for event in self.events:
+            event['date'] = self.validate(event['date'])
 
     def store_event(self, at, event):
         if self.events:
@@ -33,9 +38,12 @@ class DatetimeEventStore:
                 break
 
     def delete_event(self, events_to_remove):
+        print(events_to_remove)
         for event in events_to_remove:
             try:
+                print(event)
                 self.events.remove(event)
+                print("here")
             except ValueError:
                 pass
 

@@ -1,0 +1,27 @@
+[
+    {
+        "id": 0,
+        "date": "2018-8-18",
+        "event": "Start process"
+    },
+    {
+        "id": 1,
+        "date": "2018-8-19",
+        "event": "Processing 1"
+    },
+    {
+        "id": 2,
+        "date": "2018-8-20",
+        "event": "Processing 2"
+    },
+    {
+        "id": 3,
+        "date": "2018-8-21",
+        "event": "Processing 3"
+    },
+    {
+        "id": 4,
+        "date": "2018-8-22",
+        "event": "End process"
+    }
+]
